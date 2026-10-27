@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>پلاتفۆڕمی یەکگرتووی مامۆستایان | Teachers Hub</title>
+  
+  <!-- Google Fonts: Vazirmatn for clean Kurdish typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Vazirmatn', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+    }
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    .dark ::-webkit-scrollbar-thumb {
+      background: #334155;
+    }
+    /* Glassmorphism utilities */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .dark .glass-card {
+      background: rgba(15, 23, 42, 0.85);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-full flex flex-col transition-colors duration-300">
+
+  <!-- Toast Notification Bar -->
+  <div id="toast" class="fixed bottom-6 left-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-brand-600 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3">
+    <i id="toastIcon" class="fa-solid fa-circle-check text-amber-300 text-lg"></i>
+    <span id="toastMessage" class="font-bold text-sm"></span>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- 1. AUTHENTICATION & ONBOARDING CONTAINER                  -->
+  <!-- ========================================================= -->
+  <div id="authScreen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md">
+    
+    <!-- Auth Card 1: Login / Sign Up -->
+    <div id="authLoginBox" class="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-2xl p-8 border border-slate-200 dark:border-slate-800 transition-all">
+      <div class="text-center mb-8">
+        <div class="w-16 h-16 bg-gradient-to-tr from-brand-600 to-sky-400 rounded-2xl flex items-center justify-center text-white mx-auto shadow-lg shadow-brand-500/30 mb-3">
+          <i class="fa-solid fa-graduation-cap text-3xl"></i>
+        </div>
+        <h2 class="text-2xl font-black text-slate-900 dark:text-white">پلاتفۆڕمی مامۆستایان</h2>
+        <p class="text-xs text-slate-500 mt-1 font-medium">بۆ بەشداریکردن و بڵاوکردنەوەی سیمینار، چالاکی و پێشبڕکێ</p>
+      </div>
+
+      <!-- Google Sign In Simulation -->
+      <button onclick="handleGoogleSignIn()" class="w-full py-3.5 px-4 rounded-2xl border border-slate-300 dark:border-slate-700 font-bold flex items-center justify-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition shadow-sm mb-5">
+        <svg class="w-5 h-5" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+        </svg>
+        <span>بەردەوامبوون لەگەڵ Google Account</span>
+      </button>
+
+      <div class="relative flex py-2 items-center mb-5">
+        <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+        <span class="flex-shrink mx-4 text-xs text-slate-400 font-semibold">یاخود بە ئیمەیڵ</span>
+        <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+      </div>
+
+      <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">ئیمەیڵ</label>
+          <input type="email" id="authEmail" required placeholder="teacher@school.edu.krd" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">پاسۆرد</label>
+          <input type="password" id="authPassword" required placeholder="••••••••" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+        </div>
+        <button type="submit" class="w-full py-3.5 bg-brand-600 text-white font-bold rounded-2xl hover:bg-brand-700 shadow-lg shadow-brand-500/30 transition">
+          دروستکردنی ئەکاونت / چوونەژوورەوە
+        </button>
+      </form>
+      
+      <div class="mt-6 text-center">
+        <button onclick="skipToDemo()" class="text-xs text-brand-500 hover:underline font-bold">
+          ئەزموونکردنی هەژماری دەستبەجێ (Demo Account)
+        </button>
+      </div>
+    </div>
+
+    <!-- Auth Card 2: Teacher Profile Setup Wizard (Onboarding) -->
+    <div id="onboardingBox" class="hidden w-full max-w-xl bg-white dark:bg-slate-900 rounded-3xl shadow-2xl p-8 border border-slate-200 dark:border-slate-800 transition-all max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+        <div class="w-10 h-10 rounded-xl bg-brand-100 dark:bg-brand-900/50 text-brand-600 flex items-center justify-center font-bold">
+          ١
+        </div>
+        <div>
+          <h3 class="text-lg font-black text-slate-900 dark:text-white">تەواوکردنی زانیارییەکانی پڕۆفایلی مامۆستا</h3>
+          <p class="text-xs text-slate-500">تکایە ئەم زانیارییانە پڕبکەرەوە بۆ بڵاوکردنەوەی چالاکییەکانت</p>
+        </div>
+      </div>
+
+      <form onsubmit="handleSaveProfileSetup(event)" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">ناوی سیانی</label>
+            <input type="text" id="setupName" required placeholder="م. دیار ئاراس" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">وانە / پسپۆڕی</label>
+            <input type="text" id="setupSubject" required placeholder="فیزیا / زانست" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">قوتابخانە / پەروەردە</label>
+            <input type="text" id="setupSchool" required placeholder="ئامادەیی زانیاری" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">وێنەی پڕۆفایل (لینک)</label>
+            <input type="url" id="setupAvatar" placeholder="https://..." class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">کورتەیەک دەربارەی ئەزموونی کاریت (Bio)</label>
+          <textarea id="setupBio" rows="3" placeholder="مامۆستای فیزیا لە پەروەردەی ناوەند، خولیا لەسەر نوێکاری لە وانەوتنەوەدا..." class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">ژمارەی پەیوەندی / فەیسبووک / ئیمەیڵ</label>
+          <input type="text" id="setupContact" placeholder="0750xxxxxxx یان فەیسبووک" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+        </div>
+
+        <button type="submit" class="w-full py-3.5 bg-brand-600 text-white font-bold rounded-2xl hover:bg-brand-700 shadow-lg shadow-brand-500/30 transition mt-4">
+          تۆمارکردن و چوونە ناو پلاتفۆڕم <i class="fa-solid fa-arrow-left mr-2"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ========================================================= -->
+  <!-- 2. MAIN APPLICATION NAVBAR                                -->
+  <!-- ========================================================= -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Logo -->
+      <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('seminars')">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-brand-600 to-sky-400 flex items-center justify-center text-white shadow-lg shadow-brand-500/20">
+          <i class="fa-solid fa-chalkboard-user text-xl"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-black tracking-tight text-slate-900 dark:text-white">مەکۆی مامۆستایان</h1>
+          <p class="text-[11px] text-slate-500 font-semibold">پلاتفۆڕمی سیمینار، چالاکی و پێشبڕکێکان</p>
+        </div>
+      </div>
+
+      <!-- Main Navigation Tabs -->
+      <nav class="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-800/60 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700/50">
+        <button onclick="switchTab('seminars')" id="tab-seminars" class="tab-btn px-4 py-2 rounded-xl text-sm font-extrabold transition-all text-brand-600 dark:text-white bg-white dark:bg-brand-600 shadow-sm">
+          <i class="fa-solid fa-person-chalkboard ml-1.5"></i> سیمینارەکان
+        </button>
+        <button onclick="switchTab('activities')" id="tab-activities" class="tab-btn px-4 py-2 rounded-xl text-sm font-extrabold transition-all text-slate-600 dark:text-slate-300 hover:text-brand-600">
+          <i class="fa-solid fa-shapes ml-1.5"></i> چالاکییەکان
+        </button>
+        <button onclick="switchTab('competitions')" id="tab-competitions" class="tab-btn px-4 py-2 rounded-xl text-sm font-extrabold transition-all text-slate-600 dark:text-slate-300 hover:text-brand-600">
+          <i class="fa-solid fa-trophy ml-1.5 text-amber-500"></i> پێشبڕکێکان
+        </button>
+        <button onclick="switchTab('articles')" id="tab-articles" class="tab-btn px-4 py-2 rounded-xl text-sm font-extrabold transition-all text-slate-600 dark:text-slate-300 hover:text-brand-600">
+          <i class="fa-solid fa-book-open ml-1.5"></i> ڕاپۆرت و وتار
+        </button>
+        <button onclick="switchTab('profile')" id="tab-profile" class="tab-btn px-4 py-2 rounded-xl text-sm font-extrabold transition-all text-slate-600 dark:text-slate-300 hover:text-brand-600">
+          <i class="fa-solid fa-id-badge ml-1.5"></i> پڕۆفایلی من
+        </button>
+      </nav>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center gap-3">
+        <!-- New Post Button -->
+        <button onclick="openCreateModal()" class="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-brand-600 to-sky-500 text-white rounded-xl font-bold shadow-md hover:shadow-brand-500/25 transition transform hover:-translate-y-0.5">
+          <i class="fa-solid fa-plus-circle"></i>
+          <span class="hidden sm:inline">زیادکردنی پۆست</span>
+        </button>
+
+        <!-- Dark/Light Theme Toggle -->
+        <button onclick="toggleTheme()" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i id="themeIcon" class="fa-solid fa-moon"></i>
+        </button>
+
+        <!-- User Profile Avatar Menu -->
+        <div class="relative flex items-center gap-2 cursor-pointer" onclick="switchTab('profile')">
+          <img id="navAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Avatar" class="w-10 h-10 rounded-xl object-cover ring-2 ring-brand-500/30" />
+          <button onclick="handleLogout(event)" title="چوونە دەرەوە" class="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl transition">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Bar -->
+    <div class="flex md:hidden overflow-x-auto px-4 py-2 bg-slate-100 dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 gap-2 text-xs font-bold scrollbar-none">
+      <button onclick="switchTab('seminars')" class="px-3 py-1.5 rounded-lg whitespace-nowrap bg-brand-600 text-white">سیمینارەکان</button>
+      <button onclick="switchTab('activities')" class="px-3 py-1.5 rounded-lg whitespace-nowrap text-slate-600 dark:text-slate-300">چالاکییەکان</button>
+      <button onclick="switchTab('competitions')" class="px-3 py-1.5 rounded-lg whitespace-nowrap text-slate-600 dark:text-slate-300">پێشبڕکێکان</button>
+      <button onclick="switchTab('articles')" class="px-3 py-1.5 rounded-lg whitespace-nowrap text-slate-600 dark:text-slate-300">وتار و ڕاپۆرت</button>
+      <button onclick="switchTab('profile')" class="px-3 py-1.5 rounded-lg whitespace-nowrap text-slate-600 dark:text-slate-300">پڕۆفایل</button>
+    </div>
+  </header>
+
+  <!-- ========================================================= -->
+  <!-- 3. MAIN CONTENT CONTAINER                                 -->
+  <!-- ========================================================= -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- Top Hero Banner -->
+    <section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-900 via-brand-900 to-slate-900 text-white p-8 md:p-12 mb-8 shadow-2xl">
+      <div class="absolute -right-10 -top-10 w-64 h-64 bg-brand-500/20 rounded-full blur-3xl"></div>
+      <div class="relative z-10 max-w-2xl">
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/30 text-brand-200 border border-brand-400/30 text-xs font-bold mb-4">
+          <i class="fa-solid fa-sparkles text-amber-300"></i> بەخێربێن بۆ مەکۆی زانستی و پەروەردەیی
+        </span>
+        <h2 id="heroHeading" class="text-3xl md:text-4xl font-black leading-tight mb-3">
+          سیمینار، چالاکی و پێشبڕکێکانی مامۆستایان
+        </h2>
+        <p id="heroSubtext" class="text-slate-300 text-sm md:text-base leading-relaxed mb-6">
+          تایبەتمەند بۆ گەشەپێدانی بەهرەی قوتابییان، ئەنجامدانی سیمیناری فێرکاری و بەشداریکردن لە پێشبڕکێ زانستییەکان.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <button onclick="openCreateModal()" class="px-5 py-2.5 bg-white text-slate-900 font-bold rounded-xl shadow hover:bg-slate-100 transition text-sm">
+            <i class="fa-solid fa-plus-circle text-brand-600 ml-1"></i> بڵاوکردنەوەی بابەت
+          </button>
+          <button onclick="switchTab('competitions')" class="px-5 py-2.5 bg-brand-700/60 border border-brand-400/30 text-white font-bold rounded-xl hover:bg-brand-700 transition text-sm">
+            <i class="fa-solid fa-trophy text-amber-300 ml-1"></i> بێنینی پێشبڕکێکان
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search & Filter Header -->
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
+      <div>
+        <h3 id="sectionTitle" class="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+          <i class="fa-solid fa-person-chalkboard text-brand-600"></i> سیمینارەکانی مامۆستایان
+        </h3>
+        <p id="sectionDesc" class="text-xs text-slate-500 mt-1">لیستی سەرجەم ئەو سیمینارانەی لەلایەن مامۆستایانەوە پێشکەش دەکرێن</p>
+      </div>
+
+      <!-- Search Input -->
+      <div class="relative w-full md:w-80">
+        <i class="fa-solid fa-magnifying-glass absolute right-4 top-3.5 text-slate-400 text-sm"></i>
+        <input 
+          type="text" 
+          id="searchInput" 
+          oninput="renderCurrentTab()" 
+          placeholder="گەڕان بۆ بابەت، مامۆستا..." 
+          class="w-full pl-4 pr-11 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-sm"
+        />
+      </div>
+    </div>
+
+    <!-- Dynamic Content Container -->
+    <div id="cardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Cards rendered dynamically via JS -->
+    </div>
+
+    <!-- PROFILE VIEW SECTION (Hidden by default, shown when 'profile' tab is active) -->
+    <div id="profileViewSection" class="hidden space-y-8">
+      
+      <!-- Profile Details Card -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl">
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
+          <img id="profAvatar" src="" alt="Teacher Profile" class="w-32 h-32 rounded-3xl object-cover ring-4 ring-brand-500/20 shadow-lg" />
+          
+          <div class="flex-1 text-center md:text-right">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <h2 id="profName" class="text-2xl font-black text-slate-900 dark:text-white"></h2>
+                <p class="text-sm text-brand-600 dark:text-brand-400 font-bold mt-1">
+                  <span id="profSubject"></span> • <span id="profSchool" class="text-slate-500 font-normal"></span>
+                </p>
+              </div>
+              <button onclick="showEditProfileModal()" class="px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-xl font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                <i class="fa-solid fa-pen-to-square ml-1"></i> دەستکاری پڕۆفایل
+              </button>
+            </div>
+
+            <p id="profBio" class="text-sm text-slate-600 dark:text-slate-300 mt-4 leading-relaxed"></p>
+
+            <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-center md:justify-start gap-4 text-xs font-semibold text-slate-500">
+              <div><i class="fa-solid fa-address-book text-brand-500 ml-1"></i> <span id="profContact"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- My Publications Sub-header -->
+      <div>
+        <h3 class="text-xl font-black mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-layer-group text-brand-600"></i> سەرجەمی بڵاوکراوەکانت
+        </h3>
+        <div id="myPostsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- My posts rendered here -->
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ========================================================= -->
+  <!-- 4. MODALS CONTAINER                                       -->
+  <!-- ========================================================= -->
+
+  <!-- Modal: Create New Publication -->
+  <div id="createModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
+    <div class="w-full max-w-xl bg-white dark:bg-slate-900 rounded-3xl shadow-2xl p-6 border border-slate-200 dark:border-slate-800 transition-all max-h-[90vh] overflow-y-auto">
+      
+      <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-200 dark:border-slate-800">
+        <h3 class="text-lg font-black flex items-center gap-2">
+          <i class="fa-solid fa-circle-plus text-brand-600"></i>
+          <span>زیادکردنی بابەت / چالاکی نوێ</span>
+        </h3>
+        <button onclick="closeCreateModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleCreatePost(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">جۆری پۆست</label>
+          <select id="postCategory" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <option value="seminars">سیمینار (Seminar)</option>
+            <option value="activities">چالاکی پۆل / وۆرکشۆپ (Activity)</option>
+            <option value="competitions">پێشبڕکێ (Competition)</option>
+            <option value="articles">وتار یان ڕاپۆرت (Article/Report)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">ناونیشانی بابەت</label>
+          <input type="text" id="postTitle" required placeholder="سیمینار دەربارەی تاقیگەی فیزیا..." class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">بەروار و کات</label>
+            <input type="text" id="postDate" required placeholder="٢٠٢٦-١١-٠٥ کاتژمێر ۱۰:۰۰" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">لینک / داونلۆدی فایل (سلاین، ڕاپۆرت...)</label>
+            <input type="url" id="postLink" placeholder="https://drive.google.com/..." class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+          </div>
+        </div>
+
+        <!-- Extra specific fields for Competition -->
+        <div id="competitionExtraFields" class="p-4 bg-amber-50 dark:bg-amber-950/30 rounded-2xl border border-amber-200 dark:border-amber-900/40 space-y-3">
+          <p class="text-xs font-bold text-amber-600 dark:text-amber-400"><i class="fa-solid fa-trophy ml-1"></i> تایبەتمەندی پێشبڕکێ:</p>
+          <div>
+            <input type="text" id="postPrize" placeholder="خەڵات (نموونە: مەدالیا + خەڵاتی دارایی)" class="w-full px-3 py-2 rounded-xl border border-amber-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs" />
+          </div>
+          <div>
+            <input type="text" id="postTerms" placeholder="مەرجەکان (نموونە: تایبەت بە پۆلی ۱۰ و ۱۱)" class="w-full px-3 py-2 rounded-xl border border-amber-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">ناوەڕۆک و کورتە</label>
+          <textarea id="postContent" required rows="4" placeholder="تەواوی کورتەی سیمینارەکە یان مەرج و ڕێنوماییەکان بنووسە..." class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
+          <button type="button" onclick="closeCreateModal()" class="px-5 py-2.5 rounded-xl border text-sm font-bold hover:bg-slate-100 dark:hover:bg-slate-800">
+            پاشگەزبوونەوە
+          </button>
+          <button type="submit" class="px-6 py-2.5 bg-brand-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-brand-500/30 hover:bg-brand-700">
+            بڵاوکردنەوە
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Modal: Event / Seminar / Contest Registration -->
+  <div id="actionModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
+    <div class="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-2xl p-6 border border-slate-200 dark:border-slate-800 text-center">
+      <div class="w-14 h-14 rounded-2xl bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 mx-auto flex items-center justify-center text-2xl mb-4">
+        <i class="fa-solid fa-file-signature"></i>
+      </div>
+      <h3 id="actionModalTitle" class="text-lg font-black mb-2">تۆمارکردنی ئامادەبوون</h3>
+      <p id="actionModalSub" class="text-xs text-slate-500 mb-6">ناوی تۆ و زانیارییەکانی پڕۆفایلت بۆ ڕێکخەری ئەم بابەتە ڕەوانە دەکرێت.</p>
+      
+      <div class="flex gap-3 justify-center">
+        <button onclick="closeActionModal()" class="px-5 py-2.5 rounded-xl border text-sm font-bold hover:bg-slate-100 dark:hover:bg-slate-800">
+          داخستن
+        </button>
+        <button onclick="confirmActionModal()" class="px-6 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-emerald-500/30 hover:bg-emerald-700">
+          پشتڕاستکردنەوەی بەشداری
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================================= -->
+  <!-- 5. JAVASCRIPT LOGIC & STATE PERSISTENCE                   -->
+  <!-- ========================================================= -->
+  <script>
+    // System Seed Data
+    const INITIAL_POSTS = [
+      {
+        id: 'p1',
+        category: 'seminars',
+        title: 'سیمینار: بەکارهێنانی ژیری دەستکرد (AI) لە پلانی وانەوتنەوەدا',
+        author: 'م. ئاراس ئەحمەد',
+        subject: 'مامۆستای فیزیا',
+        school: 'ئامادەیی هەڵگورد',
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+        date: '٢٠٢٦-١١-١٠ کاتژمێر ۱۰:٠٠ی بەیانی',
+        content: 'لەم سیمینارەدا تیشک دەخەینە سەر شێوازی داڕشتنی هاوکێشەکان و دیزاین کردنی وانە بە هاوکاری ChatGPT و ئامرازە ژیرەکان بۆ چالاککردنی قوتابیان.',
+        link: 'https://slides.example.com/ai-teaching',
+        likes: 34,
+        participants: 12
+      },
+      {
+        id: 'p2',
+        category: 'activities',
+        title: 'چالاکی پۆل: دروستکردنی مۆدێلی ناوەندی کۆمەڵەی خۆر لەلایەن قوتابیان',
+        author: 'م. ڕێزان کەریم',
+        subject: 'مامۆستای زانست',
+        school: 'قوتابخانەی ڕۆشنایی بنەڕەتی',
+        avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150',
+        date: '٢٠٢٦-١٠-٢٠',
+        content: 'پڕۆژەیەکی دەستی قوتابیانی پۆلی شەشەم بۆ تێگەیشتن لە جووڵەی گۆیە ئاسمانییەکان بە بەکارهێنانی کەرەستەی ڕیسایکڵکراو.',
+        link: '',
+        likes: 19,
+        participants: 0
+      },
+      {
+        id: 'p3',
+        category: 'competitions',
+        title: 'پێشبڕکێی زانستی بیرکاری و لۆژیک لەسەر ئاستی پارێزگا',
+        author: 'م. دڵشاد عومەر',
+        subject: 'سەرپەرشتیاری بیرکاری',
+        school: 'بەڕێوەبەرایەتی پەروەردە',
+        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+        date: 'تۆمارکردن تا ٢٠٢٦-١١-٠١',
+        prize: 'مەدالیای زێڕین + کپ و خەڵاتی دارایی',
+        terms: 'تایبەت بە قوتابیانی پۆلی ۹ تا ۱۲ی ئامادەیی',
+        content: 'پێشبڕکێی ساڵانەی بیرکاری بۆ دیاریکردنی بەهرەمەندترین قوتابیانی تەمەن ۱٤ تا ۱۸ ساڵ.',
+        link: 'https://math-contest.krd',
+        likes: 56,
+        participants: 45
+      },
+      {
+        id: 'p4',
+        category: 'articles',
+        title: 'وتار: چۆن خولیای خوێندنەوە لەلای قوتابی لە تەمەنی زووەوە گەشە پێبدەین؟',
+        author: 'م. سەروەر حەسەن',
+        subject: 'مامۆستای زمانی کوردی',
+        school: 'قوتابخانەی هەڵەبجە',
+        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150',
+        date: '٢٠٢٦-١٠-١٥',
+        content: 'خوێندنەوەی پەڕتووک تەنها ئەرکێکی قوتابخانە نیست، بەڵکو هۆکارێکە بۆ فراوانکردنی ئاسۆی بیرکردنەوە. لەم وتارەدا ٥ ڕێگەی کرداریمان خستۆتە ڕوو.',
+        link: 'https://article.example.com/reading-habits',
+        likes: 28,
+        participants: 0
+      }
+    ];
+
+    // State Management
+    let currentUser = JSON.parse(localStorage.getItem('teacher_hub_user')) || null;
+    let posts = JSON.parse(localStorage.getItem('teacher_hub_posts')) || INITIAL_POSTS;
+    let currentTab = 'seminars';
+
+    // DOM Elements
+    const authScreen = document.getElementById('authScreen');
+    const authLoginBox = document.getElementById('authLoginBox');
+    const onboardingBox = document.getElementById('onboardingBox');
+    const profileViewSection = document.getElementById('profileViewSection');
+    const cardsGrid = document.getElementById('cardsGrid');
+
+    // Initialize App
+    window.addEventListener('DOMContentLoaded', () => {
+      // Check stored dark mode preference
+      if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.classList.add('dark');
+        document.getElementById('themeIcon').className = 'fa-solid fa-sun text-amber-400';
+      }
+
+      if (!currentUser) {
+        authScreen.classList.remove('hidden');
+      } else {
+        authScreen.classList.add('hidden');
+        updateUserProfileHeader();
+        renderCurrentTab();
+      }
+    });
+
+    // Theme Switcher
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      document.getElementById('themeIcon').className = isDark ? 'fa-solid fa-sun text-amber-400' : 'fa-solid fa-moon';
+    }
+
+    // Toast Notification helper
+    function showToast(msg, isSuccess = true) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMessage');
+      const toastIcon = document.getElementById('toastIcon');
+
+      toastMsg.textContent = msg;
+      toastIcon.className = isSuccess ? 'fa-solid fa-circle-check text-amber-300 text-lg' : 'fa-solid fa-triangle-exclamation text-rose-300 text-lg';
+      
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3500);
+    }
+
+    // AUTH & ONBOARDING FLOW
+    function handleGoogleSignIn() {
+      // Simulate Google Sign-In Step
+      authLoginBox.classList.add('hidden');
+      onboardingBox.classList.remove('hidden');
+      document.getElementById('setupName').value = "م. کاروان نوری";
+      document.getElementById('setupAvatar').value = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150";
+      showToast('چوونەژوورەوە لەگەڵ Google ئەنجامدرا. تکایە زانیاری پڕۆفایل نوێبکەرەوە.');
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      authLoginBox.classList.add('hidden');
+      onboardingBox.classList.remove('hidden');
+    }
+
+    function skipToDemo() {
+      currentUser = {
+        name: 'م. کاروان نوری',
+        subject: 'مامۆستای کۆمپیوتەر و فێرکاری',
+        school: 'کۆلێژی پێشەوا',
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+        bio: 'عەوداڵی نوێکاری و تەکنەلۆژیای پەروەردەییم. خولیا لەسەر گەشەپێدانی بەهرەی فێرخوازان.',
+        contact: 'karwan.nuri@education.krd'
+      };
+      localStorage.setItem('teacher_hub_user', JSON.stringify(currentUser));
+      authScreen.classList.add('hidden');
+      updateUserProfileHeader();
+      renderCurrentTab();
+      showToast('بەخێربێیت م. کاروان!');
+    }
+
+    function handleSaveProfileSetup(e) {
+      e.preventDefault();
+      currentUser = {
+        name: document.getElementById('setupName').value,
+        subject: document.getElementById('setupSubject').value,
+        school: document.getElementById('setupSchool').value,
+        avatar: document.getElementById('setupAvatar').value || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
+        bio: document.getElementById('setupBio').value || 'مامۆستا لە پەروەردەی نوێ',
+        contact: document.getElementById('setupContact').value || 'ناونیشانی پەیوەندی دیاری نەکراوە'
+      };
+      localStorage.setItem('teacher_hub_user', JSON.stringify(currentUser));
+      authScreen.classList.add('hidden');
+      updateUserProfileHeader();
+      renderCurrentTab();
+      showToast('پڕۆفایلەکەت بە سەرکەوتوویی دروستکرا!');
+    }
+
+    function handleLogout(e) {
+      e.stopPropagation();
+      localStorage.removeItem('teacher_hub_user');
+      currentUser = null;
+      location.reload();
+    }
+
+    function updateUserProfileHeader() {
+      if (!currentUser) return;
+      document.getElementById('navAvatar').src = currentUser.avatar;
+      
+      // Update profile screen elements
+      document.getElementById('profAvatar').src = currentUser.avatar;
+      document.getElementById('profName').textContent = currentUser.name;
+      document.getElementById('profSubject').textContent = currentUser.subject;
+      document.getElementById('profSchool').textContent = currentUser.school;
+      document.getElementById('profBio').textContent = currentUser.bio;
+      document.getElementById('profContact').textContent = currentUser.contact;
+    }
+
+    function showEditProfileModal() {
+      onboardingBox.classList.remove('hidden');
+      authLoginBox.classList.add('hidden');
+      authScreen.classList.remove('hidden');
+
+      document.getElementById('setupName').value = currentUser.name;
+      document.getElementById('setupSubject').value = currentUser.subject;
+      document.getElementById('setupSchool').value = currentUser.school;
+      document.getElementById('setupAvatar').value = currentUser.avatar;
+      document.getElementById('setupBio').value = currentUser.bio;
+      document.getElementById('setupContact').value = currentUser.contact;
+    }
+
+    // TAB NAVIGATION & RENDERING
+    function switchTab(tabKey) {
+      currentTab = tabKey;
+      
+      // Update tab button styles
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.className = 'tab-btn px-4 py-2 rounded-xl text-sm font-extrabold transition-all text-slate-600 dark:text-slate-300 hover:text-brand-600';
+      });
+
+      const activeBtn = document.getElementById(`tab-${tabKey}`);
+      if (activeBtn) {
+        activeBtn.className = 'tab-btn px-4 py-2 rounded-xl text-sm font-extrabold transition-all text-brand-600 dark:text-white bg-white dark:bg-brand-600 shadow-sm';
+      }
+
+      // Hide or Show Profile View
+      if (tabKey === 'profile') {
+        cardsGrid.classList.add('hidden');
+        profileViewSection.classList.remove('hidden');
+        document.getElementById('sectionTitle').textContent = 'پڕۆفایلی مامۆستا';
+        document.getElementById('sectionDesc').textContent = 'تەواوی بڵاوکراوە و چالاکییەکانت لە یەک شوێندا';
+        renderMyPosts();
+      } else {
+        cardsGrid.classList.remove('hidden');
+        profileViewSection.classList.add('hidden');
+        renderCurrentTab();
+      }
+    }
+
+    function renderCurrentTab() {
+      const searchVal = document.getElementById('searchInput').value.toLowerCase();
+      
+      // Set section headers
+      const headers = {
+        seminars: { title: 'سیمینارەکانی مامۆستایان', desc: 'سیمینارە زانستی و فێرکارییە پێشکەشکراوەکان', icon: 'fa-person-chalkboard' },
+        activities: { title: 'چالاکییەکانی پۆل و پەروەردەیی', desc: 'وۆرکشۆپ و پڕۆژەی دەستی قوتابیان لە پۆلەکاندا', icon: 'fa-shapes' },
+        competitions: { title: 'پێشبڕکێ زانستی و هاوبەشەکان', desc: 'پێشبڕکێ و ئاڵنگارییەکان بۆ قوتابیان و مامۆستایان', icon: 'fa-trophy' },
+        articles: { title: 'ڕاپۆرت و وتارە زانستییەکان', desc: 'وتار و پێکۆڵینەوە پەروەردەیییەکان', icon: 'fa-book-open' }
+      };
+
+      const h = headers[currentTab] || headers.seminars;
+      document.getElementById('sectionTitle').innerHTML = `<i class="fa-solid ${h.icon} text-brand-600"></i> ${h.title}`;
+      document.getElementById('sectionDesc').textContent = h.desc;
+
+      // Filter Posts
+      const filtered = posts.filter(p => p.category === currentTab && (
+        p.title.toLowerCase().includes(searchVal) || 
+        p.author.toLowerCase().includes(searchVal) ||
+        p.content.toLowerCase().includes(searchVal)
+      ));
+
+      cardsGrid.innerHTML = '';
+
+      if (filtered.length === 0) {
+        cardsGrid.innerHTML = `
+          <div class="col-span-full py-16 text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800">
+            <i class="fa-solid fa-folder-open text-4xl text-slate-300 dark:text-slate-700 mb-3"></i>
+            <h4 class="font-bold text-slate-600 dark:text-slate-400">هیچ بابەتێک نەدۆزرایەوە</h4>
+            <p class="text-xs text-slate-400 mt-1">یەکەم مامۆستا بە بۆ بڵاوکردنەوەی بابەت لەم بەشەدا!</p>
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(post => {
+        cardsGrid.appendChild(createPostCardHTML(post));
+      });
+    }
+
+    function renderMyPosts() {
+      const myPostsGrid = document.getElementById('myPostsGrid');
+      myPostsGrid.innerHTML = '';
+      
+      const myPosts = posts.filter(p => p.author === currentUser.name);
+
+      if (myPosts.length === 0) {
+        myPostsGrid.innerHTML = `
+          <div class="col-span-full py-12 text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800">
+            <p class="text-xs text-slate-400">تۆ تا ئێستا هیچ بابەتێکت بڵاونەکردۆتەوە.</p>
+          </div>
+        `;
+        return;
+      }
+
+      myPosts.forEach(post => {
+        myPostsGrid.appendChild(createPostCardHTML(post, true));
+      });
+    }
+
+    // Helper: Create Post Card DOM Element
+    function createPostCardHTML(post, isOwner = false) {
+      const card = document.createElement('article');
+      card.className = 'glass-card flex flex-col justify-between rounded-3xl border border-slate-200 dark:border-slate-800 p-6 transition-all hover:shadow-xl hover:-translate-y-1';
+
+      const isCompetition = post.category === 'competitions';
+
+      card.innerHTML = `
+        <div>
+          <!-- Card Top Header -->
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <div class="flex items-center gap-3">
+              <img src="${post.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" alt="${post.author}" class="w-11 h-11 rounded-2xl object-cover ring-2 ring-brand-500/20" />
+              <div>
+                <h4 class="font-bold text-sm text-slate-900 dark:text-white">${post.author}</h4>
+                <p class="text-[11px] text-slate-500">${post.subject || ''} • ${post.school || ''}</p>
+              </div>
+            </div>
+            ${isOwner ? `
+              <button onclick="deletePost('${post.id}')" class="text-rose-400 hover:text-rose-600 p-1.5 rounded-lg text-xs" title="سڕینەوە">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            ` : ''}
+          </div>
+
+          <!-- Title -->
+          <h3 class="text-base font-black text-slate-900 dark:text-white mb-2 leading-snug">
+            ${post.title}
+          </h3>
+
+          <!-- Date & Meta Badge -->
+          <div class="flex items-center gap-2 text-xs text-slate-500 mb-3">
+            <span class="inline-flex items-center gap-1 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-lg">
+              <i class="fa-regular fa-calendar text-brand-500"></i> ${post.date}
+            </span>
+          </div>
+
+          <!-- Content snippet -->
+          <p class="text-slate-600 dark:text-slate-300 text-xs leading-relaxed mb-4 line-clamp-3">
+            ${post.content}
+          </p>
+
+          <!-- Competition details box if applicable -->
+          ${isCompetition ? `
+            <div class="mb-4 p-3 bg-amber-50 dark:bg-amber-950/40 rounded-2xl border border-amber-200 dark:border-amber-900/40 space-y-1 text-xs">
+              ${post.prize ? `<div class="font-bold text-amber-600 dark:text-amber-400"><i class="fa-solid fa-gift ml-1"></i> خەڵات: ${post.prize}</div>` : ''}
+              ${post.terms ? `<div class="text-slate-600 dark:text-slate-300"><i class="fa-solid fa-circle-info ml-1"></i> مەرج: ${post.terms}</div>` : ''}
+            </div>
+          ` : ''}
+
+          <!-- File Link Attachment -->
+          ${post.link ? `
+            <a href="${post.link}" target="_blank" class="inline-flex items-center justify-center gap-2 w-full py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-bold text-brand-600 dark:text-brand-400 hover:bg-brand-50 transition mb-4">
+              <i class="fa-solid fa-download"></i> داونلۆدی سلاید یان پەڕگە
+            </a>
+          ` : ''}
+        </div>
+
+        <!-- Card Footer Actions -->
+        <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold">
+          <button onclick="likePost('${post.id}')" class="flex items-center gap-1.5 text-slate-500 hover:text-rose-500 transition">
+            <i class="fa-solid fa-heart text-rose-500"></i>
+            <span>${post.likes || 0}</span>
+          </button>
+
+          <button onclick="openActionModal('${post.id}', '${post.category}')" class="px-4 py-2 bg-brand-600 text-white rounded-xl shadow-md hover:bg-brand-700 transition">
+            ${isCompetition ? 'تۆماربوون لە پێشبڕکێ' : 'بەشداریکردن'}
+          </button>
+        </div>
+      `;
+
+      return card;
+    }
+
+    // POST MANAGEMENT ACTIONS
+    function openCreateModal() {
+      document.getElementById('createModal').classList.remove('hidden');
+    }
+
+    function closeCreateModal() {
+      document.getElementById('createModal').classList.add('hidden');
+    }
+
+    function handleCreatePost(e) {
+      e.preventDefault();
+      
+      const newPost = {
+        id: 'post-' + Date.now(),
+        category: document.getElementById('postCategory').value,
+        title: document.getElementById('postTitle').value,
+        author: currentUser.name,
+        subject: currentUser.subject,
+        school: currentUser.school,
+        avatar: currentUser.avatar,
+        date: document.getElementById('postDate').value,
+        link: document.getElementById('postLink').value,
+        prize: document.getElementById('postPrize').value,
+        terms: document.getElementById('postTerms').value,
+        content: document.getElementById('postContent').value,
+        likes: 0,
+        participants: 0
+      };
+
+      posts.unshift(newPost);
+      localStorage.setItem('teacher_hub_posts', JSON.stringify(posts));
+
+      closeCreateModal();
+      showToast('بابەتەکەت بە سەرکەوتوویی بڵاوکرایەوە!');
+      
+      // Switch to created category tab
+      switchTab(newPost.category);
+    }
+
+    function deletePost(id) {
+      if (!confirm('ئایا دڵنیایت لە سڕینەوەی ئەم بابەتە؟')) return;
+      posts = posts.filter(p => p.id !== id);
+      localStorage.setItem('teacher_hub_posts', JSON.stringify(posts));
+      showToast('بابەتەکە سڕایەوە');
+      if (currentTab === 'profile') renderMyPosts(); else renderCurrentTab();
+    }
+
+    function likePost(id) {
+      posts = posts.map(p => {
+        if (p.id === id) {
+          return { ...p, likes: (p.likes || 0) + 1 };
+        }
+        return p;
+      });
+      localStorage.setItem('teacher_hub_posts', JSON.stringify(posts));
+      if (currentTab === 'profile') renderMyPosts(); else renderCurrentTab();
+    }
+
+    // REGISTRATION ACTION MODAL
+    let activeActionPostId = null;
+
+    function openActionModal(postId, category) {
+      activeActionPostId = postId;
+      const modal = document.getElementById('actionModal');
+      const title = document.getElementById('actionModalTitle');
+      const sub = document.getElementById('actionModalSub');
+
+      if (category === 'competitions') {
+        title.textContent = 'تۆماربوون لە پێشبڕکێدا';
+        sub.textContent = 'زانیارییەکانی تۆ وەک ناوی قوتابخانە و ناو لە لێژنەی پێشبڕکێ تۆمار دەکرێت.';
+      } else {
+        title.textContent = 'پشتڕاستکردنەوەی بەشداریکردن لە سیمینار / چالاکی';
+        sub.textContent = 'ناوی تۆ لە لیستی ئامادەبووانی سەرەکی تۆمار دەکرێت.';
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeActionModal() {
+      document.getElementById('actionModal').classList.add('hidden');
+    }
+
+    function confirmActionModal() {
+      closeActionModal();
+      showToast('بەشداریکردنت بە سەرکەوتوویی تۆمارکرا!');
+    }
+  </script>
+</body>
+</html>
